@@ -18,8 +18,14 @@ BoardStateNumbers =  [[0,0,0,189,135,0,0,0] #横方向、一番右の石が1桁�
 def OppositeColor(color):
     return {1:2,2:1}[color]
 
-def end():
-    pass
+def end(BoardStateNumbers):
+    Board2D = BoardStateNumbers_to_Board2D(BoardStateNumbers)
+    BlackNum,WhiteNum = 0,0
+    for i in Board2D:
+        BlackNum += i.count(1)
+        WhiteNum += i.count(2)
+    result = "●:" + str(BlackNum) +"-○:" + str(WhiteNum)
+    print(result)
 
 def printBoard_2D(BoardStateNumbers):
     Board2D = BoardStateNumbers_to_Board2D(BoardStateNumbers)
@@ -43,7 +49,7 @@ while True:
         CurrentTurnColor = OppositeColor(CurrentTurnColor)
         PutablePositionSet = MakePutablePositionList(BoardStateNumbers,CurrentTurnColor)
         if PutablePositionSet == set([]): #双方置く場所がないので終了
-            end()
+            end(BoardStateNumbers)
             break
     print("Next" + [0,"●","○"][CurrentTurnColor])
     printPutablePositions(PutablePositionSet)
