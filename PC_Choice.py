@@ -1,4 +1,3 @@
-from Othello_OneMatch import OppositeColor
 from CulcBoardStateNumbers import *
 
 '''
@@ -18,6 +17,12 @@ def Base_10toN(X,n):
         return Base_10toN(int(X/n), n)+str(X%n)
     return str(X%n)
 
+#白黒逆の色を返す。
+def OppositeColor(color):
+    return {1:2,2:1}[color]
+
+#PC_Choiceインスタンス生成の際に、盤面の各マスに設定した点数(PointArray2D)から
+#6561*4(各列に対応、本来8だが上下対称なので÷2)の「3進法番号(0~6560),index(0~3)の場合の得点」が二次元タプルを生成する
 def Make6561PointA_Tuple(PointArray2D):
     PointA6561List = []
     color_to_point = (0,1,-1) #colorのindexを取ると得点の係数になる
@@ -44,11 +49,12 @@ point_array1 =   ((68,-12,53,-8,-8,53,-12,68)
 
 class PC_Choice():
     def __init__(self,ID,t1,t2,PointArray2D_1,PointArray2D_2):
-        self.ID = ID
+        self.ID = ID #クラス変数にするべき
         self.t1 = t1
         self.t2 = t2
         self.PointA6561Tuple_1 = Make6561PointA_Tuple(PointArray2D_1)
         self.PointA6561Tuple_2 = Make6561PointA_Tuple(PointArray2D_2)
+        #PCの手番もインスタンス変数にした方がよいかも
 
     def CulcBlackPoint(self,BoardStateNumbers,CurrentTurnNumber):
         PutablePositionNum_Black = len(MakePutablePositionList(BoardStateNumbers,1)) #この部分の計算が重くなりそうなので前半だけでいいかも
@@ -106,6 +112,8 @@ class PC_Choice():
                     FinalPoint = max(PointList)
                 else: #PutablePositionSetが白番の場合
                     FinalPoint = min(PointList)
+                print(PutablePositionSet)
+                print(PointList)
                 return PutablePositionSet[PointList.index(FinalPoint)]
             else: #CurrentDepth!=1 なので上のレベルに点数を返す
                 if TurnColor == 1: #PutablePositionSetが黒番の場合
@@ -128,10 +136,10 @@ class PC_Choice():
                 return min(PointList)
 
 
-PC1 = PC_Choice(1,10,23,point_array1,point_array1)
+PC1 = PC_Choice(1,200,23,point_array1,point_array1)
 BoardStateNumbers =  [[0,0,0,189,135,0,0,0] #横方向、一番右の石が1桁目を表す
                     , [0,0,0,189,135,0,0,0] #縦方向、一番下の石が1桁目を表す
                     , [0,0,0,0,54,108,54,0,0,0,0] #左下→右上方向、左下が一桁目
                     , [0,0,0,0,27,216,27,0,0,0,0]] #左上→右下方向、左上が一桁目
 print(PC1.CulcBlackPoint(BoardStateNumbers,0))
-print(PC1.MinMaxChoice(BoardStateNumbers,2,0,8,float("inf"),0))
+print(PC1.MinMaxChoice(BoardStateNumbers,2,0,4,float("inf"),0)) #黒番なので+∞になる。

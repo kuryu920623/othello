@@ -1,9 +1,10 @@
 from CulcBoardStateNumbers import *
 from Convert_StateNumbers_Board2D import *
+from PC_Choice import *
 
 blank, black, white = 0,1,2
 HumanTurn,PCTurn = 0,1
-BlackTurn = 0 # 黒番：0なら人間、1ならPC
+BlackTurn = 1 # 黒番：0なら人間、1ならPC
 WhiteTurn = 0 # 白版：0なら人間、1ならPC
 HumanOrPlayerTurn = [0,BlackTurn,WhiteTurn]
 CurrentTurnColor = 1 #CurrentTurnColorはその時の手番の色(数字)、初手は黒
@@ -35,13 +36,20 @@ def printBoard_2D(BoardStateNumbers):
             board_forPrint[i][j] = [str(i)+str(j),"●","○"][Board2D[i][j]]
         print(" ".join(board_forPrint[i]))
 
-def printPutablePositions(PutablePositionSet):
+def printPutablePositions(PutablePositionSet,CurrentTurnColor):
+    print("Next" + [0,"●","○"][CurrentTurnColor])
     PositionList = list(PutablePositionSet)
     PositionList = [str(Tuple[0])+str(Tuple[1]) for Tuple in PositionList]
     PositionList.sort()
     print(" ".join(PositionList))
 
+#PCインスタンス生成
+PC1 = PC_Choice(1,0,0,point_array1,point_array1)
+
 #対戦スタート
+BlackTurn = 1 # 黒番：0なら人間、1ならPC
+WhiteTurn = 0 # 白版：0なら人間、1ならPC
+CurrentTurnNumber = 0
 while True:
     printBoard_2D(BoardStateNumbers)
     PutablePositionSet = MakePutablePositionList(BoardStateNumbers,CurrentTurnColor)
@@ -51,8 +59,9 @@ while True:
         if PutablePositionSet == set([]): #双方置く場所がないので終了
             end(BoardStateNumbers)
             break
-    print("Next" + [0,"●","○"][CurrentTurnColor])
-    printPutablePositions(PutablePositionSet)
+    CurrentTurnNumber += 1
+    printPutablePositions(PutablePositionSet,CurrentTurnColor)
+    print()
 
     if HumanOrPlayerTurn[CurrentTurnColor] == 0: #人間のターン
         while True:
@@ -63,7 +72,7 @@ while True:
             if PutPosition_Tuple in PutablePositionSet:
                 break
     else: #PCのターン
-        pass
+        PutPosition_Tuple = PC1.MinMaxChoice(BoardStateNumbers,2,0,6,float("inf"),CurrentTurnNumber)
 
     BoardStateNumbers = CuclBoardStateNumber_OnePut(BoardStateNumbers,*PutPosition_Tuple,CurrentTurnColor)
     CurrentTurnColor = OppositeColor(CurrentTurnColor)
