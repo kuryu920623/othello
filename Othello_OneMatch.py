@@ -1,3 +1,5 @@
+#タプルを全部numpyArrayにした方がよい？
+
 from CulcBoardStateNumbers import *
 from Convert_StateNumbers_Board2D import *
 from PC_Choice import *
