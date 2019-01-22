@@ -44,7 +44,8 @@ def printPutablePositions(PutablePositionSet,CurrentTurnColor):
     print(" ".join(PositionList))
 
 #PCインスタンス生成
-PC1 = PC_Choice(1,0,0,point_array1,point_array1)
+PC1 = PC_Choice(1,1000,1000,point_array1,point_array1)
+PC1 = PC_Choice(1,1000,1000,point_array1,point_array1)
 
 #対戦スタート
 BlackTurn = 1 # 黒番：0なら人間、1ならPC

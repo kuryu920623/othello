@@ -91,7 +91,7 @@ class PC_Choice():
         #次の番の色確定完了
 
         PointList = []
-        CurrentDepthPoint = -float("inf") if TurnColor == 1 else float("inf")
+        CurrentDepthPoint = -float("inf") if TurnColor == 1 else float("inf") #forループ初回用のCurrentPointDepth
         if alphabeta: #前の番の色≠今回の番の色なので、αβ法適用
             for PutPosition in PutablePositionSet:
                 NewBoardStateNumbers = CuclBoardStateNumber_OnePut(BoardStateNumbers,*PutPosition,TurnColor)
@@ -99,7 +99,7 @@ class PC_Choice():
                     Point = self.CulcBlackPoint(NewBoardStateNumbers,CurrentTurnNumber)
                 else:
                     Point = self.MinMaxChoice(NewBoardStateNumbers,TurnColor,CurrentDepth,EndDepth,CurrentDepthPoint,CurrentTurnNumber)
-                    CurrentDepthPoint = max(Point,CurrentDepthPoint) if TurnColor == 1 else min(Point,CurrentDepthPoint)
+                    CurrentDepthPoint = max(Point,CurrentDepthPoint) if TurnColor == 1 else min(Point,CurrentDepthPoint) #forループ次の回で使う
                 #αβ法適用できるか判断
                 if (Point < UpperDepthPoint and TurnColor == 2) or (Point > UpperDepthPoint and TurnColor == 1):
                     return Point #上の階層に値を返してPointListの作成を終了,関数は一度returnするとfor内であろうと処理を停止する。
@@ -123,6 +123,7 @@ class PC_Choice():
 
 
         else: #前の番の色=今回の番の色なので、αβ法適用不可、この場合CurrentDepth=1 となることはありえない
+            print("a")
             for PutPosition in PutablePositionSet:
                 NewBoardStateNumbers = CuclBoardStateNumber_OnePut(BoardStateNumbers,*PutPosition,TurnColor)
                 if CurrentDepth == EndDepth:
