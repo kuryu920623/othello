@@ -1,4 +1,5 @@
 from CulcBoardStateNumbers import *
+from Reserved6561Tuples.PointA6561Tuple_LastProve import PointA6561Tuple_LastProve
 
 '''
 点数計算は常に黒の点数を計算することにする。
@@ -37,19 +38,13 @@ def Make6561PointA_Tuple(PointArray2D):
         PointA6561List.append(tuple(PointList_i))
     return tuple(PointA6561List)
 
-point_array1 =   ((68,-12,53,-8,-8,53,-12,68)
-                ,(-12,-62,-33,-7,-7,-33,-62,-12)
-                ,(53,-33,26,8,8,26,-33,53)
-                ,(-8,-7,8,-18,-18,8,-7,-8)
-                ,(-8,-7,8,-18,-18,8,-7,-8)
-                ,(53,-33,26,8,8,26,-33,53)
-                ,(-12,-62,-33,-7,-7,-33,-62,-12)
-                ,(68,-12,53,-8,-8,53,-12,68))
-
-
 class PC_Choice():
-    def __init__(self,ID,t1,t2,PointArray2D_1,PointArray2D_2):
-        self.ID = ID #クラス変数にするべき
+    PC_id = 0
+    PointA6561Tuple_LastProve = PointA6561Tuple_LastProve
+
+    def __init__(self,t1,t2,PointArray2D_1,PointArray2D_2):
+        self.ID = PC_Choice.PC_id
+        PC_Choice.PC_id += 1
         self.t1 = t1
         self.t2 = t2
         self.PointA6561Tuple_1 = Make6561PointA_Tuple(PointArray2D_1)
@@ -57,6 +52,12 @@ class PC_Choice():
         #PCの手番もインスタンス変数にした方がよいかも
 
     def CulcBlackPoint(self,BoardStateNumbers,CurrentTurnNumber):
+        if CurrentTurnNumber >= 50: #石を最大にするための計算、各マスのポイントが全部1
+            PointA = 0
+            for row in range(8):
+                PointA += PC_Choice.PointA6561Tuple_LastProve[BoardStateNumbers[0][row]]
+            return PointA
+
         PutablePositionNum_Black = len(MakePutablePositionList(BoardStateNumbers,1)) #この部分の計算が重くなりそうなので前半だけでいいかも
         PutablePositionNum_White = len(MakePutablePositionList(BoardStateNumbers,2))
         PointB = PutablePositionNum_Black - PutablePositionNum_White
@@ -99,7 +100,7 @@ class PC_Choice():
                     Point = self.CulcBlackPoint(NewBoardStateNumbers,CurrentTurnNumber)
                 else:
                     Point = self.MinMaxChoice(NewBoardStateNumbers,TurnColor,CurrentDepth,EndDepth,CurrentDepthPoint,CurrentTurnNumber)
-                    CurrentDepthPoint = max(Point,CurrentDepthPoint) if TurnColor == 1 else min(Point,CurrentDepthPoint) #forループ次の回で使う
+                CurrentDepthPoint = max(Point,CurrentDepthPoint) if TurnColor == 1 else min(Point,CurrentDepthPoint) #forループ次の回で使う
                 #αβ法適用できるか判断
                 if (Point < UpperDepthPoint and TurnColor == 2) or (Point > UpperDepthPoint and TurnColor == 1):
                     return Point #上の階層に値を返してPointListの作成を終了,関数は一度returnするとfor内であろうと処理を停止する。
@@ -123,24 +124,34 @@ class PC_Choice():
 
 
         else: #前の番の色=今回の番の色なので、αβ法適用不可、この場合CurrentDepth=1 となることはありえない
-            print("a")
             for PutPosition in PutablePositionSet:
                 NewBoardStateNumbers = CuclBoardStateNumber_OnePut(BoardStateNumbers,*PutPosition,TurnColor)
                 if CurrentDepth == EndDepth:
-                    PointList.append(self.CulcBlackPoint(NewBoardStateNumbers,CurrentTurnNumber))
+                    Point = self.CulcBlackPoint(NewBoardStateNumbers,CurrentTurnNumber)
                 else:
-                    PointList.append(self.MinMaxChoice(NewBoardStateNumbers,TurnColor,CurrentDepth,EndDepth,CurrentDepthPoint,CurrentTurnNumber))
-                    CurrentDepthPoint = max(PointList[-1],CurrentDepthPoint) if TurnColor == 1 else min(Point,CurrentDepthPoint)
+                    Point = self.MinMaxChoice(NewBoardStateNumbers,TurnColor,CurrentDepth,EndDepth,CurrentDepthPoint,CurrentTurnNumber)
+                CurrentDepthPoint = max(Point,CurrentDepthPoint) if TurnColor == 1 else min(Point,CurrentDepthPoint)
+                PointList.append(Point)
             if TurnColor == 1: #PutablePositionSetが黒番の場合
                 return max(PointList)
             else: #PutablePositionSetが白番の場合
                 return min(PointList)
 
 
-PC1 = PC_Choice(1,200,23,point_array1,point_array1)
-BoardStateNumbers =  [[0,0,0,189,135,0,0,0] #横方向、一番右の石が1桁目を表す
-                    , [0,0,0,189,135,0,0,0] #縦方向、一番下の石が1桁目を表す
-                    , [0,0,0,0,54,108,54,0,0,0,0] #左下→右上方向、左下が一桁目
-                    , [0,0,0,0,27,216,27,0,0,0,0]] #左上→右下方向、左上が一桁目
-print(PC1.CulcBlackPoint(BoardStateNumbers,0))
-print(PC1.MinMaxChoice(BoardStateNumbers,2,0,4,float("inf"),0)) #黒番なので+∞になる。
+
+point_array1 =   ((68,-12,53,-8,-8,53,-12,68)
+                ,(-12,-62,-33,-7,-7,-33,-62,-12)
+                ,(53,-33,26,8,8,26,-33,53)
+                ,(-8,-7,8,-18,-18,8,-7,-8)
+                ,(-8,-7,8,-18,-18,8,-7,-8)
+                ,(53,-33,26,8,8,26,-33,53)
+                ,(-12,-62,-33,-7,-7,-33,-62,-12)
+                ,(68,-12,53,-8,-8,53,-12,68))
+#
+# PC1 = PC_Choice(200,23,point_array1,point_array1)
+# BoardStateNumbers =  [[0,0,0,189,135,0,0,0] #横方向、一番右の石が1桁目を表す
+#                     , [0,0,0,189,135,0,0,0] #縦方向、一番下の石が1桁目を表す
+#                     , [0,0,0,0,54,108,54,0,0,0,0] #左下→右上方向、左下が一桁目
+#                     , [0,0,0,0,27,216,27,0,0,0,0]] #左上→右下方向、左上が一桁目
+# print(PC1.CulcBlackPoint(BoardStateNumbers,0))
+# print(PC1.MinMaxChoice(BoardStateNumbers,2,0,4,float("inf"),0)) #黒番なので+∞になる。

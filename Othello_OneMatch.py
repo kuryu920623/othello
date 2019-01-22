@@ -44,8 +44,8 @@ def printPutablePositions(PutablePositionSet,CurrentTurnColor):
     print(" ".join(PositionList))
 
 #PCインスタンス生成
-PC1 = PC_Choice(1,1000,1000,point_array1,point_array1)
-PC1 = PC_Choice(1,1000,1000,point_array1,point_array1)
+PC1 = PC_Choice(40,10,point_array1,point_array1)
+PC2 = PC_Choice(1000,1000,point_array1,point_array1)
 
 #対戦スタート
 BlackTurn = 1 # 黒番：0なら人間、1ならPC
@@ -73,7 +73,11 @@ while True:
             if PutPosition_Tuple in PutablePositionSet:
                 break
     else: #PCのターン
-        PutPosition_Tuple = PC1.MinMaxChoice(BoardStateNumbers,2,0,6,float("inf"),CurrentTurnNumber)
+        CurrentDepthPoint = float("inf") if CurrentTurnColor == 1 else -float("inf")
+        if CurrentTurnNumber >= 50:
+            PutPosition_Tuple = PC1.MinMaxChoice(BoardStateNumbers,OppositeColor(CurrentTurnColor),0,7,CurrentDepthPoint,CurrentTurnNumber)
+        else:
+            PutPosition_Tuple = PC1.MinMaxChoice(BoardStateNumbers,OppositeColor(CurrentTurnColor),0,5,CurrentDepthPoint,CurrentTurnNumber)
 
     BoardStateNumbers = CuclBoardStateNumber_OnePut(BoardStateNumbers,*PutPosition_Tuple,CurrentTurnColor)
     CurrentTurnColor = OppositeColor(CurrentTurnColor)
