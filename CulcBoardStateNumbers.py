@@ -1,5 +1,3 @@
-#Numpyの使い方がそもそもわからん
-
 from Reserved6561Tuples.TurnableRange_ForBlack import TurnableRange_ForBlack
 from Reserved6561Tuples.TurnableRange_ForWhite import TurnableRange_ForWhite
 from Reserved6561Tuples.PutablePositions_ForBlack import PutablePositions_ForBlack

@@ -1,6 +1,3 @@
-#タプルを全部numpyArrayにした方がよい？
-#PC20体に永遠に試合をさせる
-
 from CulcBoardStateNumbers import *
 from Convert_StateNumbers_Board2D import *
 from PC_Choice import *
