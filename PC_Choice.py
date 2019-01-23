@@ -1,3 +1,5 @@
+#Numpyのブランチを作成
+
 from CulcBoardStateNumbers import *
 from Reserved6561Tuples.PointA6561Tuple_LastProve import PointA6561Tuple_LastProve
 
