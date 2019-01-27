@@ -113,8 +113,6 @@ class PC_Choice():
                     FinalPoint = max(PointList)
                 else: #PutablePositionSetが白番の場合
                     FinalPoint = min(PointList)
-                print(PutablePositionSet)
-                print(PointList)
                 return PutablePositionSet[PointList.index(FinalPoint)]
             else: #CurrentDepth!=1 なので上のレベルに点数を返す
                 if TurnColor == 1: #PutablePositionSetが黒番の場合

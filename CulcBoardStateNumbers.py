@@ -53,7 +53,7 @@ def MakePutablePositionList(BoardStateNumbers,color):
 #引数deltaは石の数値の変化量(白→黒なら-1,空に白を置いたら+2)
 def CuclBoardStateNumber_OneStone(BoardStateNumbers,i,j,delta):
 
-    NewBoardStateNumbers = copy.deepcopy(BoardStateNumbers) #新しい変数名を用意しないとなぜかグローバル変数が置き換わってしまう。
+    NewBoardStateNumbers = [i[:] for i in BoardStateNumbers] #新しい変数名を用意しないとなぜかグローバル変数が置き換わってしまう。
 
     #(1)横方向
     NewBoardStateNumbers[0][i] += delta * 3 ** (7-j)
@@ -115,7 +115,7 @@ def CuclBoardStateNumber_OnePut(BoardStateNumbers,i,j,color):
         TurnableRangeTuple = TurnableRange[BoardStateNumber][7-i]
         [TurnStones.add((i-k,j-k)) for k in TurnableRangeTuple]
 
-    NewBoardStateNumbers = copy.deepcopy(BoardStateNumbers) #新しい変数名を用意しないとなぜかグローバル変数が置き換わってしまう。
+    NewBoardStateNumbers = [i[:] for i in BoardStateNumbers] #新しい変数名を用意しないとなぜかグローバル変数が置き換わってしまう。
 
     #(1)置いた石の分のBoardStateNumbersの変化計算
     NewBoardStateNumbers = CuclBoardStateNumber_OneStone(NewBoardStateNumbers,i,j,color)
